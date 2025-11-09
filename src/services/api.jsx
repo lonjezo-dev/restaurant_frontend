@@ -33,6 +33,13 @@ export const ordersAPI = {
   
   // Update order status
   updateOrderStatus: (id, status) => api.patch(`/orders/${id}/status`, { status }),
+
+   // Get kitchen display orders
+  getKitchenOrders: () => api.get('/orders/kitchen/display'),
+  
+  // Update order item status
+  updateItemStatus: (orderId, itemId, status) => 
+    api.patch(`/orders/${orderId}/items/${itemId}/status`, { item_status: status }),
 }
 
 export const tablesAPI = {
@@ -42,5 +49,9 @@ export const tablesAPI = {
   // Get specific table
   getTable: (id) => api.get(`/table/${id}`),
 }
+
+
+
+
 
 export default api

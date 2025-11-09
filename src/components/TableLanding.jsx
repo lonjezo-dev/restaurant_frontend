@@ -1,10 +1,15 @@
 import { useParams, useNavigate } from 'react-router-dom'
+import { useCartStore } from '../stores/cartStore'
+
 
 export default function TableLanding() {
   const { tableId } = useParams()
   const navigate = useNavigate()
+  const setTable = useCartStore(state => state.setTable)
 
   const handleStartOrder = () => {
+    // Set the table ID in the cart store
+    setTable(tableId)
     navigate(`/table/${tableId}/menu`)
   }
 

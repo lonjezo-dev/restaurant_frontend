@@ -11,7 +11,6 @@ export default function MenuItemCard({ item, tableId }) {
       addItem(item, quantity, specialInstructions)
       setQuantity(0)
       setSpecialInstructions('')
-      // Optional: Show success message
       alert(`${quantity} ${item.name} added to cart!`)
     }
   }

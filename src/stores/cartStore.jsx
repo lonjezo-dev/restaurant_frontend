@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { ordersAPI } from '../services/api'
 
 export const useCartStore = create(
   persist(
@@ -66,11 +67,51 @@ export const useCartStore = create(
         return items.reduce((total, item) => total + item.quantity, 0)
       },
       
-      // Clear cart
+      // // Clear cart
       clearCart: () => set({ items: [] }),
       
-      // Set table ID
+      // // Set table ID
       setTable: (tableId) => set({ tableId }),
+
+
+      // Submit order to backend
+      submitOrder: async (customerNotes = '') => {
+        const { items, tableId } = get()
+        
+        if (items.length === 0) {
+          throw new Error('Cart is empty')
+        }
+        
+        if (!tableId) {
+          throw new Error('Table number is required')
+        }
+
+        try {
+          const orderData = {
+            table_id: parseInt(tableId),
+            customer_notes: customerNotes,
+            order_items: items.map(item => ({
+              menu_item_id: item.menu_item_id,
+              quantity: item.quantity,
+              special_instructions: item.special_instructions || ''
+            }))
+          }
+
+          const response = await ordersAPI.createOrder(orderData)
+          const order = response.data.order
+          
+          // Clear cart after successful order
+          get().clearCart()
+          
+          return order
+        } catch (error) {
+          console.error('Order submission failed:', error)
+          throw new Error(error.response?.data?.error || 'Failed to submit order')
+        }
+      },
+      
+      // Set table ID when user starts ordering
+      setTable: (tableId) => set({ tableId: parseInt(tableId) }),
     }),
     {
       name: 'restaurant-cart-storage',

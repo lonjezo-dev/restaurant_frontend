@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import TableLanding from './components/TableLanding'
 import MenuPage from './components/MenuPage'
 import CartPage from './components/CartPage'
-
+import OrderTracking from './components/OrderTracking'
 function App() {
   return (
     <Router>
@@ -10,7 +10,8 @@ function App() {
         <Routes>
           <Route path="/table/:tableId" element={<TableLanding />} />
           <Route path="/table/:tableId/menu" element={<MenuPage />} />
-          <Route path="/table/:tableId/cart" element={<CartPage />} />
+          <Route path="/table/:tableId/cart" element={<CartPage />} /> 
+          <Route path="/order/:orderId/tracking" element={<OrderTracking />} />
           <Route path="/" element={<HomePage />} />
         </Routes>
       </div>

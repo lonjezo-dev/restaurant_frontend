@@ -70,15 +70,6 @@ export default function MenuPage() {
 
       {/* Menu Content */}
       <div className="max-w-4xl mx-auto px-4 py-6">
-        {/* <div className="text-center py-12">
-          <div className="text-6xl mb-4">🍕</div>
-          <h2 className="text-2xl font-bold text-gray-700 mb-2">
-            Menu Coming Soon!
-          </h2>
-          <p className="text-gray-500">
-            We're working on loading our delicious menu items...
-          </p>
-        </div> */}
          {Object.entries(menuByCategory || {}).map(([category, items]) => (
           <div key={category} className="mb-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-4 capitalize">
@@ -87,7 +78,7 @@ export default function MenuPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {items.map(item => (
                 <MenuItemCard 
-                  key={item.id} 
+                  key={item} 
                   item={item} 
                   tableId={tableId}
                 />

@@ -1,24 +1,49 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useCartStore } from '../stores/cartStore'
+import { useState } from 'react'
+
 
 export default function CartPage() {
   const { tableId } = useParams()
   const navigate = useNavigate()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [customerNotes, setCustomerNotes] = useState('')
   const { 
     items, 
     removeItem, 
     updateQuantity, 
     getTotal, 
     clearCart,
-    getTotalItems 
+    getTotalItems,
+    submitOrder
   } = useCartStore()
 
   const totalItems = getTotalItems() 
 
   const handleCheckout = async () => {
-    // TODO: Implement order submission
+      if (items.length === 0) return
+    
+    setIsSubmitting(true)
+    try {
+      const order = await submitOrder(customerNotes)
+      
+      // Navigate to order tracking page
+      navigate(`/order/${order.id}/tracking`, { 
+        state: { 
+          orderNumber: order.id,
+          tableId: tableId 
+        }
+      })
+      
+    } catch (error) {
+      alert(`Order failed: ${error.message}`)
+    } finally {
+      setIsSubmitting(false)
+    }
+  
+
     console.log('Checking out:', { tableId, items })
-    alert('Order functionality coming soon!')
+    // alert('Order functionality coming soon!')
   }
 
   if (items.length === 0) {
@@ -64,7 +89,21 @@ export default function CartPage() {
       <div className="max-w-2xl mx-auto px-4 py-6">
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
-          
+
+           {/* Customer Notes Input */}
+          <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Special Instructions for Kitchen
+            </label>
+            <textarea
+              value={customerNotes}
+              onChange={(e) => setCustomerNotes(e.target.value)}
+              placeholder="Allergies, dietary restrictions, special requests..."
+              rows="3"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm resize-none"
+            />
+          </div>
+
           {items.map((item, index) => (
             <div key={index} className="flex justify-between items-center py-3 border-b border-gray-100">
               <div className="flex-1">
