@@ -1,10 +1,13 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useApi } from '../hooks/useApi'
 import { menuAPI } from '../services/api'
+import { useCartStore } from '../stores/cartStore'
+import MenuItemCard from './MenuItemCard' 
 
 export default function MenuPage() {
   const { tableId } = useParams()
   const navigate = useNavigate()
+   const cartItemCount = useCartStore(state => state.getTotalItems())
 
   const { data: menuItems, loading, error } = useApi(menuAPI.getMenuItems)
 
@@ -60,7 +63,7 @@ export default function MenuPage() {
            onClick={() => navigate(`/table/${tableId}/cart`)}
            className="bg-orange-500 text-white px-4 py-2 rounded-lg"
            >
-            Cart (0)
+            Cart ({cartItemCount})
           </button>
         </div>
       </div>

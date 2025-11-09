@@ -13,6 +13,8 @@ export default function CartPage() {
     getTotalItems 
   } = useCartStore()
 
+  const totalItems = getTotalItems() 
+
   const handleCheckout = async () => {
     // TODO: Implement order submission
     console.log('Checking out:', { tableId, items })
@@ -46,12 +48,15 @@ export default function CartPage() {
             <h1 className="text-xl font-bold text-gray-900">Your Order</h1>
             <p className="text-sm text-gray-500">Table {tableId}</p>
           </div>
-          <button 
-            onClick={() => navigate(`/table/${tableId}/menu`)}
-            className="text-orange-500 font-semibold"
-          >
-            Add More Items
-          </button>
+         <div className="flex items-center space-x-4">
+            <span className="text-gray-600">Items: {totalItems}</span>
+            <button 
+              onClick={() => navigate(`/table/${tableId}/menu`)}
+              className="text-orange-500 font-semibold"
+            >
+              Add More Items
+            </button>
+          </div>
         </div>
       </div>
 

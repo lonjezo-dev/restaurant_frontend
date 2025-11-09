@@ -1,12 +1,19 @@
 import { useState } from 'react'
+import { useCartStore } from '../stores/cartStore'
 
 export default function MenuItemCard({ item, tableId }) {
   const [quantity, setQuantity] = useState(0)
+  const [specialInstructions, setSpecialInstructions] = useState('')
+  const addItem = useCartStore(state => state.addItem)
 
   const handleAddToCart = () => {
-    // TODO: Implement cart functionality
-    console.log('Adding to cart:', { item, quantity, tableId })
-    setQuantity(0)
+     if (quantity > 0) {
+      addItem(item, quantity, specialInstructions)
+      setQuantity(0)
+      setSpecialInstructions('')
+      // Optional: Show success message
+      alert(`${quantity} ${item.name} added to cart!`)
+    }
   }
 
   return (
@@ -27,6 +34,20 @@ export default function MenuItemCard({ item, tableId }) {
         </div>
         
         <p className="text-gray-600 text-sm mb-4">{item.description}</p>
+
+           {/* Special Instructions */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Special Instructions
+          </label>
+          <input
+            type="text"
+            value={specialInstructions}
+            onChange={(e) => setSpecialInstructions(e.target.value)}
+            placeholder="No onions, extra sauce, etc."
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+          />
+        </div>
         
         <div className="flex justify-between items-center">
           {/* Quantity Selector */}
