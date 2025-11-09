@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import TableLanding from './components/TableLanding'
 import MenuPage from './components/MenuPage'
+import CartPage from './components/CartPage'
+
 function App() {
   return (
     <Router>
@@ -8,6 +10,7 @@ function App() {
         <Routes>
           <Route path="/table/:tableId" element={<TableLanding />} />
           <Route path="/table/:tableId/menu" element={<MenuPage />} />
+          <Route path="/table/:tableId/cart" element={<CartPage />} />
           <Route path="/" element={<HomePage />} />
         </Routes>
       </div>
