@@ -7,7 +7,7 @@ function App() {
       <div className="min-h-screen bg-gray-50">
         <Routes>
           <Route path="/table/:tableId" element={<TableLanding />} />
-           <Route path="/table/:tableId/menu" element={<MenuPage />} />
+          <Route path="/table/:tableId/menu" element={<MenuPage />} />
           <Route path="/" element={<HomePage />} />
         </Routes>
       </div>
