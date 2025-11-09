@@ -71,7 +71,7 @@ export const useCartStore = create(
       clearCart: () => set({ items: [] }),
       
       // // Set table ID
-      setTable: (tableId) => set({ tableId }),
+      // setTable: (tableId) => set({ tableId }),
 
 
       // Submit order to backend

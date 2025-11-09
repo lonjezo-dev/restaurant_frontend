@@ -3,6 +3,7 @@ import TableLanding from './components/TableLanding'
 import MenuPage from './components/MenuPage'
 import CartPage from './components/CartPage'
 import OrderTracking from './components/OrderTracking'
+import KitchenDashboard from './components/KitchenDashboard'
 function App() {
   return (
     <Router>
@@ -12,6 +13,7 @@ function App() {
           <Route path="/table/:tableId/menu" element={<MenuPage />} />
           <Route path="/table/:tableId/cart" element={<CartPage />} /> 
           <Route path="/order/:orderId/tracking" element={<OrderTracking />} />
+           <Route path="/kitchen" element={<KitchenDashboard />} />
           <Route path="/" element={<HomePage />} />
         </Routes>
       </div>

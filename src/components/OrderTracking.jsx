@@ -11,27 +11,27 @@ export default function OrderTracking() {
   const [error, setError] = useState(null)
 
   // Mock order data for development (remove when backend is ready)
-  const mockOrder = {
-    id: orderId,
-    order_status: 'pending',
-    total_amount: '25.97',
-    order_time: new Date().toISOString(),
-    Order_Items: [
-      { id: 1, quantity: 1, item_status: 'pending', MenuItem: { name: 'Margherita Pizza' } },
-      { id: 2, quantity: 1, item_status: 'pending', MenuItem: { name: 'Caesar Salad' } }
-    ]
-  }
+//   const mockOrder = {
+//     id: orderId,
+//     order_status: 'pending',
+//     total_amount: '25.97',
+//     order_time: new Date().toISOString(),
+//     Order_Items: [
+//       { id: 1, quantity: 1, item_status: 'pending', MenuItem: { name: 'Margherita Pizza' } },
+//       { id: 2, quantity: 1, item_status: 'pending', MenuItem: { name: 'Caesar Salad' } }
+//     ]
+//   }
 
   const fetchOrder = async () => {
     try {
       setLoading(true)
       // TODO: Replace with real API call when backend is ready
-      // const response = await ordersAPI.getOrder(orderId)
-      // setOrder(response.data)
+      const response = await ordersAPI.getOrder(orderId)
+      setOrder(response.data)
       
       // Using mock data for now
       setTimeout(() => {
-        setOrder(mockOrder)
+        // setOrder(mockOrder)
         setLoading(false)
       }, 1000)
       
@@ -50,11 +50,11 @@ export default function OrderTracking() {
     return () => clearInterval(interval)
   }, [orderId])
 
-  const statusStages = [
-    { key: 'pending', label: 'Order Received', description: 'We got your order!' },
-    { key: 'in_progress', label: 'Preparing', description: 'Kitchen is cooking...' },
-    { key: 'completed', label: 'Ready', description: 'Your food is ready!' }
-  ]
+//   const statusStages = [
+//     { key: 'pending', label: 'Order Received', description: 'We got your order!' },
+//     { key: 'in_progress', label: 'Preparing', description: 'Kitchen is cooking...' },
+//     { key: 'completed', label: 'Ready', description: 'Your food is ready!' }
+//   ]
 
   const currentStatusIndex = statusStages.findIndex(stage => stage.key === order?.order_status)
 
