@@ -10,23 +10,13 @@ export default function OrderTracking() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // Mock order data for development (remove when backend is ready)
-//   const mockOrder = {
-//     id: orderId,
-//     order_status: 'pending',
-//     total_amount: '25.97',
-//     order_time: new Date().toISOString(),
-//     Order_Items: [
-//       { id: 1, quantity: 1, item_status: 'pending', MenuItem: { name: 'Margherita Pizza' } },
-//       { id: 2, quantity: 1, item_status: 'pending', MenuItem: { name: 'Caesar Salad' } }
-//     ]
-//   }
 
   const fetchOrder = async () => {
     try {
       setLoading(true)
       // TODO: Replace with real API call when backend is ready
       const response = await ordersAPI.getOrder(orderId)
+      console.log(response.data)
       setOrder(response.data)
       
       // Using mock data for now
@@ -50,11 +40,11 @@ export default function OrderTracking() {
     return () => clearInterval(interval)
   }, [orderId])
 
-//   const statusStages = [
-//     { key: 'pending', label: 'Order Received', description: 'We got your order!' },
-//     { key: 'in_progress', label: 'Preparing', description: 'Kitchen is cooking...' },
-//     { key: 'completed', label: 'Ready', description: 'Your food is ready!' }
-//   ]
+  const statusStages = [
+    { key: 'pending', label: 'Order Received', description: 'We got your order!' },
+    { key: 'in_progress', label: 'Preparing', description: 'Kitchen is cooking...' },
+    { key: 'completed', label: 'Ready', description: 'Your food is ready!' }
+  ]
 
   const currentStatusIndex = statusStages.findIndex(stage => stage.key === order?.order_status)
 
@@ -112,7 +102,7 @@ export default function OrderTracking() {
             {statusStages.map((stage, index) => {
               const isCompleted = index < currentStatusIndex
               const isCurrent = index === currentStatusIndex
-              const isUpcoming = index > currentStatusIndex
+              // const isUpcoming = index > currentStatusIndex
               
               return (
                 <div key={stage.key} className="flex items-start space-x-4">
@@ -136,12 +126,12 @@ export default function OrderTracking() {
                     <p className="text-sm text-gray-500 mt-1">{stage.description}</p>
                     
                     {/* Item Status for current stage */}
-                    {isCurrent && order.Order_Items && (
+                    {isCurrent && order.order_Items && (
                       <div className="mt-3 space-y-2">
-                        {order.Order_Items.map(item => (
+                        {order.order_Items.map(item => (
                           <div key={item.id} className="flex items-center text-sm">
                             <span className="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
-                            <span>{item.quantity}x {item.MenuItem.name}</span>
+                            <span>{item.quantity}x {item.menuItem.name}</span>
                             <span className="ml-2 text-xs bg-gray-100 px-2 py-1 rounded">
                               {item.item_status}
                             </span>
@@ -160,10 +150,10 @@ export default function OrderTracking() {
         <div className="bg-white rounded-2xl shadow-lg p-8">
           <h3 className="text-lg font-semibold mb-4">Order Summary</h3>
           <div className="space-y-3">
-            {order.Order_Items?.map(item => (
+            {order.order_Items?.map(item => (
               <div key={item.id} className="flex justify-between items-center py-2">
                 <div>
-                  <span className="font-medium">{item.quantity}x {item.MenuItem.name}</span>
+                  <span className="font-medium">{item.quantity}x {item.menuItem.name}</span>
                 </div>
                 <div className={`px-3 py-1 rounded-full text-xs font-medium ${
                   item.item_status === 'ready' ? 'bg-green-100 text-green-800' :
