@@ -4,14 +4,11 @@ import { ordersAPI } from '../services/api'
 export default function KitchenDashboard() {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
-//   const [selectedOrder, setSelectedOrder] = useState(null)
-
 
   const fetchKitchenOrders = async () => {
     try {
-      // TODO: Replace with real API call
       const response = await ordersAPI.getKitchenOrders()
-      console.log(response.data)
+      console.log('Fetched Orders:', response.data)
       setOrders(response.data)
     } catch (error) {
       console.error('Failed to fetch kitchen orders:', error)
@@ -22,21 +19,22 @@ export default function KitchenDashboard() {
 
   const updateItemStatus = async (orderId, itemId, newStatus) => {
     try {
-      // TODO: Replace with real API call
       await ordersAPI.updateItemStatus(orderId, itemId, newStatus)
-      
+
       // Update local state
-      setOrders(prev => prev.map(order => 
-        order.id === orderId 
-          ? {
-              ...order,
-              Order_Items: order.Order_Items.map(item =>
-                item.id === itemId ? { ...item, item_status: newStatus } : item
-              )
-            }
-          : order
-      ))
-      
+      setOrders(prev =>
+        prev.map(order =>
+          order.id === orderId
+            ? {
+                ...order,
+                order_Items: order.order_Items.map(item =>
+                  item.id === itemId ? { ...item, item_status: newStatus } : item
+                ),
+              }
+            : order
+        )
+      )
+
       console.log(`Updated order ${orderId} item ${itemId} to ${newStatus}`)
     } catch (error) {
       console.error('Failed to update item status:', error)
@@ -45,13 +43,12 @@ export default function KitchenDashboard() {
 
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
-      // TODO: Replace with real API call
       await ordersAPI.updateOrderStatus(orderId, newStatus)
-      
-      setOrders(prev => prev.map(order =>
-        order.id === orderId ? { ...order, order_status: newStatus } : order
-      ))
-      
+      setOrders(prev =>
+        prev.map(order =>
+          order.id === orderId ? { ...order, order_status: newStatus } : order
+        )
+      )
       console.log(`Updated order ${orderId} to ${newStatus}`)
     } catch (error) {
       console.error('Failed to update order status:', error)
@@ -64,8 +61,8 @@ export default function KitchenDashboard() {
     return () => clearInterval(interval)
   }, [])
 
-  const pendingOrders = orders.filter(order => order.order_status === 'pending')
-  const inProgressOrders = orders.filter(order => order.order_status === 'in_progress')
+  const pendingOrders = orders.filter(o => o.order_status === 'pending')
+  const inProgressOrders = orders.filter(o => o.order_status === 'in_progress')
 
   if (loading) {
     return (
@@ -100,44 +97,46 @@ export default function KitchenDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* New Orders */}
-        <div className="mb-8">
-          <h2 className="text-xl font-bold mb-4 text-red-400">🆕 New Orders</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {pendingOrders.map(order => (
-              <OrderCard 
-                key={order.id} 
-                order={order} 
-                onUpdateItemStatus={updateItemStatus}
-                onUpdateOrderStatus={updateOrderStatus}
-              />
-            ))}
-            {pendingOrders.length === 0 && (
-              <div className="col-span-3 text-center py-8 text-gray-500">
-                No new orders at the moment
-              </div>
-            )}
-          </div>
-        </div>
+        <Section
+          title="🆕 New Orders"
+          color="text-red-400"
+          orders={pendingOrders}
+          onUpdateItemStatus={updateItemStatus}
+          onUpdateOrderStatus={updateOrderStatus}
+          emptyText="No new orders at the moment"
+        />
 
         {/* Orders in Progress */}
-        <div>
-          <h2 className="text-xl font-bold mb-4 text-orange-400">👨‍🍳 Orders in Progress</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {inProgressOrders.map(order => (
-              <OrderCard 
-                key={order.id} 
-                order={order} 
-                onUpdateItemStatus={updateItemStatus}
-                onUpdateOrderStatus={updateOrderStatus}
-              />
-            ))}
-            {inProgressOrders.length === 0 && (
-              <div className="col-span-3 text-center py-8 text-gray-500">
-                No orders in progress
-              </div>
-            )}
-          </div>
-        </div>
+        <Section
+          title="👨‍🍳 Orders in Progress"
+          color="text-orange-400"
+          orders={inProgressOrders}
+          onUpdateItemStatus={updateItemStatus}
+          onUpdateOrderStatus={updateOrderStatus}
+          emptyText="No orders in progress"
+        />
+      </div>
+    </div>
+  )
+}
+
+function Section({ title, color, orders, onUpdateItemStatus, onUpdateOrderStatus, emptyText }) {
+  return (
+    <div className="mb-8">
+      <h2 className={`text-xl font-bold mb-4 ${color}`}>{title}</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {orders.length > 0 ? (
+          orders.map(order => (
+            <OrderCard
+              key={order.id}
+              order={order}
+              onUpdateItemStatus={onUpdateItemStatus}
+              onUpdateOrderStatus={onUpdateOrderStatus}
+            />
+          ))
+        ) : (
+          <div className="col-span-3 text-center py-8 text-gray-500">{emptyText}</div>
+        )}
       </div>
     </div>
   )
@@ -146,24 +145,21 @@ export default function KitchenDashboard() {
 // Order Card Component
 function OrderCard({ order, onUpdateItemStatus, onUpdateOrderStatus }) {
   const getTimeSinceOrder = (orderTime) => {
-    const diff = Math.floor((new Date() - new Date(orderTime)) / 60000) // minutes
+    const diff = Math.floor((new Date() - new Date(orderTime)) / 60000)
     return `${diff} min ago`
   }
 
-  const handleStartOrder = () => {
-    onUpdateOrderStatus(order.id, 'in_progress')
-  }
+  const handleStartOrder = () => onUpdateOrderStatus(order.id, 'in_progress')
+  const handleCompleteOrder = () => onUpdateOrderStatus(order.id, 'completed')
 
-  const handleCompleteOrder = () => {
-    onUpdateOrderStatus(order.id, 'completed')
-  }
-
-  const allItemsReady = order.Order_Items?.every(item => item.item_status === 'ready')
+  const allItemsReady = order.order_Items?.every(item => item.item_status === 'ready')
 
   return (
-    <div className={`bg-gray-800 rounded-lg border-l-4 ${
-      order.order_status === 'pending' ? 'border-red-500' : 'border-orange-500'
-    } p-4`}>
+    <div
+      className={`bg-gray-800 rounded-lg border-l-4 ${
+        order.order_status === 'pending' ? 'border-red-500' : 'border-orange-500'
+      } p-4`}
+    >
       {/* Order Header */}
       <div className="flex justify-between items-start mb-3">
         <div>
@@ -171,26 +167,30 @@ function OrderCard({ order, onUpdateItemStatus, onUpdateOrderStatus }) {
           <p className="text-gray-400 text-sm">Table {order.table?.table_number}</p>
           <p className="text-gray-500 text-xs">{getTimeSinceOrder(order.order_time)}</p>
         </div>
-        <div className={`px-2 py-1 rounded text-xs font-bold ${
-          order.order_status === 'pending' ? 'bg-red-500' : 'bg-orange-500'
-        }`}>
+        <div
+          className={`px-2 py-1 rounded text-xs font-bold ${
+            order.order_status === 'pending' ? 'bg-red-500' : 'bg-orange-500'
+          }`}
+        >
           {order.order_status.toUpperCase()}
         </div>
       </div>
 
       {/* Order Items */}
       <div className="space-y-2 mb-4">
-        {order.order_Items.map(item => (
+        {order.order_Items?.map(item => (
           <div key={item.id} className="flex justify-between items-center py-1">
             <div className="flex-1">
-              <span className="font-medium">{item.quantity}x {item.MenuItem.name}</span>
+              <span className="font-medium">
+                {item.quantity}x {item.MenuItem?.name}
+              </span>
               {item.special_instructions && (
                 <p className="text-xs text-gray-400 mt-1">💡 {item.special_instructions}</p>
               )}
             </div>
             <select
               value={item.item_status}
-              onChange={(e) => onUpdateItemStatus(order.id, item.id, e.target.value)}
+              onChange={e => onUpdateItemStatus(order.id, item.id, e.target.value)}
               className="bg-gray-700 text-white text-sm rounded px-2 py-1 border border-gray-600"
             >
               <option value="pending">Pending</option>

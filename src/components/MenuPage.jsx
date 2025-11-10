@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate} from 'react-router-dom'
 import { useApi } from '../hooks/useApi'
 import { menuAPI } from '../services/api'
 import { useCartStore } from '../stores/cartStore'
@@ -10,6 +10,7 @@ export default function MenuPage() {
    const cartItemCount = useCartStore(state => state.getTotalItems())
 
   const { data: menuItems, loading, error } = useApi(menuAPI.getMenuItems)
+  // console.log(menuItems);
 
    if (loading) {
     return (
@@ -71,6 +72,7 @@ export default function MenuPage() {
       {/* Menu Content */}
       <div className="max-w-4xl mx-auto px-4 py-6">
          {Object.entries(menuByCategory || {}).map(([category, items]) => (
+          console.log(items),
           <div key={category} className="mb-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-4 capitalize">
               {category}
