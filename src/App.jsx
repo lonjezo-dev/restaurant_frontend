@@ -28,7 +28,7 @@ function HomePage() {
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
           🍽️ Restaurant System
         </h1>
-        <p className="text-gray-600">Go to /table/1 to test the customer view</p>
+        <p className="text-gray-600">Go to /table/4 to test the customer view</p>
       </div>
     </div>
   )
