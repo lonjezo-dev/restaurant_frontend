@@ -51,6 +51,29 @@ export const tablesAPI = {
 }
 
 
+export const tableAvailabilityAPI = {
+  // Get all tables status
+  getAllTablesStatus: () => api.get('/tables/status'),
+  
+  // Check table availability for specific time
+  checkTableAvailability: (tableId, datetime, duration = 90) => 
+    api.get(`/tables/availability/${tableId}`, {
+      params: { datetime, duration }
+    }),
+  
+  // Check immediate table availability
+  checkImmediateAvailability: (tableId) => 
+    api.get(`/tables/availability/${tableId}/immediate`),
+  
+  // Find available tables based on search criteria
+  findAvailableTables: (searchCriteria) => 
+    api.post('/tables/availability/search', searchCriteria),
+  
+  // Get detailed table status
+  getTableStatus: (tableId) => api.get(`/tables/${tableId}/status`),
+}
+
+
 
 
 
